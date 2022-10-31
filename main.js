@@ -21,7 +21,7 @@ const COMMANDS = {
     repo : 
         "Take a look at some of my work",
     date :
-        "Saturday, October 29, 2022 - 19:07",
+        showDate(),
     'sudo rm -rf' : 
         "It's the end!",
     party :
@@ -30,6 +30,13 @@ const COMMANDS = {
 
 let userInput, terminalOutput;
 let typeWriter = document.querySelector('.typewriter');
+// Order history table
+const commandsHistory = [];
+let historyIndex = -1;
+let historyMode = false;
+
+// Table containing the orders (useful for the completion of the orders)
+let commandsList = Object.keys(COMMANDS);
 
 const app = () => {
     userInput = document.getElementById("userInput");
@@ -88,7 +95,9 @@ const key = function keyEvent(e) {
     const input = userInput.innerHTML;
 
     if (e.key === "Enter") {
+        historyMode = false;
         execute(input);
+        commandsHistory.push(input);
         userInput.innerHTML = "";
         return;
     }
@@ -115,6 +124,73 @@ function getRepo() {
     a.click();
 }
 
+function showDate() {
+    let today = new Date().toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"});
+    let time = new Date(), hours = time.getHours(), minutes = time.getMinutes();
+    return today + ' - ' + hours + ':' + minutes;
+}
+
+function showQuote() {
+    //fetching random quotes/data from the api and parsing it into JS object
+    fetch("https://api.quotable.io/random")
+        .then(res => res.json())
+        .then(data => {
+            COMMANDS['quote'] = data.content + " - " + data.author;
+        })
+}
+
+const whooops = () => {
+    document.body.querySelector(".hero").remove();
+    document.body.style.background = "#000";
+    document.body.style.width = "100vw";
+    document.body.style.height = "100vh";
+
+    document.body.classList.add("firework");
+    const fireworks = new Fireworks(document.body, {
+        mouse: { click: true, move: false, max: 7 },
+    });
+    fireworks.start();
+};  
+
+// TOP SECRET, DON'T READ
+const startTheParty = () => {
+    const count = 200;
+    const defaults = {
+        origin: { y: 0.7 },
+    };
+
+    function fire(particleRatio, opts) {
+    confetti(
+        Object.assign({}, defaults, opts, {
+        particleCount: Math.floor(count * particleRatio),
+        })
+    );
+    }
+
+    fire(0.25, {
+    spread: 26,
+    startVelocity: 55,
+    });
+    fire(0.2, {
+    spread: 60,
+    });
+    fire(0.35, {
+    spread: 100,
+    decay: 0.91,
+    scalar: 0.8,
+    });
+    fire(0.1, {
+    spread: 120,
+    startVelocity: 25,
+    decay: 0.92,
+    scalar: 1.2,
+    });
+    fire(0.1, {
+    spread: 120,
+    startVelocity: 45,
+    });
+};  
+
 const backspace = function backSpaceKeyEvent(e) {
     if (e.keyCode !== 8 && e.keyCode !== 46) {
       return;
@@ -122,6 +198,43 @@ const backspace = function backSpaceKeyEvent(e) {
     userInput.innerHTML = userInput.innerHTML.slice(0, userInput.innerHTML.length - 1);
 };
 
+//Autocompletion
+const autocomplete = function tabs(e) {
+    const input = userInput.innerHTML;
+    //TAB
+    if (e.key == "Tab") {
+        e.preventDefault();
+        if (input === "") {
+            userInput.innerHTML = input + "help";
+        } else {
+            const matchingCommand = commandsList.find((c) =>
+                c.startsWith(input)
+            );
+            if (matchingCommand) {
+                userInput.innerHTML = matchingCommand;
+            }
+        }  
+        historyMode = false;
+        // UP / DOWN
+    } else if (e.key == "ArrowUp" || e.key == "ArrowDown") {
+        if(commandsHistory.length > 0) {
+            if (historyMode === false) {
+                historyIndex = commandsHistory.length - 1;
+            } else {
+                if (e.key == "ArrowUp" && historyIndex !== 0) {
+                    historyIndex--;
+                } else if (e.key == "ArrowDown" && historyIndex !== commandsHistory.length - 1) {
+                    historyIndex++;
+                }
+            }
+            userInput.innerHTML = commandsHistory[historyIndex];
+        } 
+        historyMode = true;
+    }
+}
+
 document.addEventListener("keydown", backspace);
+document.addEventListener("keydown", autocomplete);
 document.addEventListener("keypress", key);
 document.addEventListener("DOMContentLoaded", app);
+document.addEventListener("DOMContentLoaded", showQuote);

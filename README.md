@@ -24,11 +24,11 @@ Just type any of the commands below to get some more info.
 - [x] `experience` : Yeah, I've made some cool stuff before
 - [x] `get cv` :  : Download my CV [pdf]
 - [x] `education` : my journey
-- [ ] `quote` : Get a random quote
-- [ ] `repo` : Take a look at some of my work
-- [ ] `date` : Displays current date and time
-- [ ] You can use the [TAB] key to autocomplete a command
-- [ ] You can find old commands with the up and down arrows.
+- [x] `quote` : Get a random quote
+- [x] `repo` : Take a look at some of my work
+- [x] `date` : Displays current date and time
+- [x] You can use the [TAB] key to autocomplete a command
+- [x] You can find old commands with the up and down arrows.
 - [ ] Easter Eggs : `sudo rm -rf` , `party` : Check it out
  
 ## Resources
