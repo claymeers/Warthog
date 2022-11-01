@@ -29,7 +29,7 @@ Just type any of the commands below to get some more info.
 - [x] `date` : Displays current date and time
 - [x] You can use the [TAB] key to autocomplete a command
 - [x] You can find old commands with the up and down arrows.
-- [ ] Easter Eggs : `sudo rm -rf` , `party` : Check it out
+- [x] Easter Eggs : `sudo rm -rf` , `party` : Check it out
  
 ## Resources
 - [Confetti](https://github.com/catdad/canvas-confetti) - for confetti
